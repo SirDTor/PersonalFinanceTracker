@@ -1,4 +1,6 @@
-﻿namespace PersonalFinanceTracker
+﻿using System.Globalization;
+
+namespace PersonalFinanceTracker
 {
     public partial class App : Application
     {
@@ -10,6 +12,6 @@
         protected override Window CreateWindow(IActivationState? activationState)
         {
             return new Window(new AppShell());
-        }
+        }        
     }
 }
