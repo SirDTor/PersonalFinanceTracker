@@ -1,0 +1,35 @@
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PersonalFinanceTracker.Views.PinSettingsPage"
+    Title="PIN-код"
+    Padding="20"
+    BackgroundColor="#E6F2EE">
+
+    <VerticalStackLayout Spacing="20">
+
+        <Label Text="Установите или измените PIN-код"
+               FontSize="18"
+               HorizontalOptions="Center" />
+
+        <Entry x:Name="PinEntry"
+               Placeholder="Введите новый PIN"
+               IsPassword="True"
+               Keyboard="Numeric" />
+
+        <Button Text="Сохранить PIN"
+                Clicked="OnSavePinClicked"
+                BackgroundColor="#4CAF50"
+                TextColor="White" />
+
+        <Button Text="Удалить PIN"
+                Clicked="OnRemovePinClicked"
+                BackgroundColor="#F44336"
+                TextColor="White" />
+
+        <Label x:Name="StatusLabel"
+               FontSize="14"
+               TextColor="Gray"
+               HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentPage>

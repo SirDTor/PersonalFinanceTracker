@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using PersonalFinanceTracker.Services;
+using System.Globalization;
 
 namespace PersonalFinanceTracker
 {
@@ -11,7 +12,21 @@ namespace PersonalFinanceTracker
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            // Проверяем, установлен ли PIN
+            Page startPage;
+
+            if (PinService.IsPinSet)
+            {
+                // PIN установлен — сначала открываем PinUnlockPage
+                startPage = new NavigationPage(new Views.PinUnlockPage());
+            }
+            else
+            {
+                // Если PIN не задан — сразу основная оболочка
+                startPage = new AppShell();
+            }
+
+            return new Window(startPage);
         }        
     }
 }

@@ -31,14 +31,14 @@ namespace PersonalFinanceTracker.Views
                     Color = SKColor.Parse("#4CAF50")
                 }).ToList();
 
-            ChartView.Chart = new DonutChart { Entries = entries };
+            //ChartView.Chart = new DonutChart { Entries = entries };
 
             BalanceLabel.Text = _dataService.GetBalance().ToString("C0", CultureInfo.CreateSpecificCulture("ru-RU"));
         }
 
         private async void OnAddClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new AddTransactionPage());
+            await Navigation.PushAsync(new AddTransactionPage());            
         }
 
         private async void OnListClicked(object sender, EventArgs e)

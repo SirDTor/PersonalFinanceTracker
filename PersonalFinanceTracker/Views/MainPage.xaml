@@ -1,37 +1,50 @@
-﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
-             x:Class="PersonalFinanceTracker.Views.MainPage"
-             Title="Финансы"
-             BackgroundColor="#E6F2EE">
+﻿<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+    x:Class="PersonalFinanceTracker.Views.MainPage"
+    Title="Финансы"
+    BackgroundColor="#E6F2EE">
 
-    <VerticalStackLayout Padding="20" Spacing="20">
-        <Label Text="Баланс"
-               FontSize="18"
-               TextColor="Gray"
-               HorizontalOptions="Center" />
-        <Label x:Name="BalanceLabel"
-               FontSize="32"
-               FontAttributes="Bold"
-               TextColor="Green"
-               HorizontalOptions="Center" />
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
 
-        <microcharts:ChartView x:Name="ChartView"
+        <!-- Верх: Баланс -->
+        <VerticalStackLayout Grid.Row="0" Spacing="10">
+            <Label Text="Баланс"
+                   FontSize="18"
+                   TextColor="Gray"
+                   HorizontalOptions="Center" />
+            <Label x:Name="BalanceLabel"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   TextColor="Green"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>
+
+        <!-- Центр (можно вернуть график сюда позже) -->
+        <!--<microcharts:ChartView Grid.Row="1"
+                                x:Name="ChartView"
                                 HeightRequest="200"
-                                VerticalOptions="Center" />
+                                VerticalOptions="Center" />-->
 
-        <Button Text="Добавить транзакцию"
-                Clicked="OnAddClicked"
-                BackgroundColor="#4CAF50"
-                TextColor="White"
-                CornerRadius="25"
-                HeightRequest="50" />
+        <!-- Низ: Кнопки -->
+        <HorizontalStackLayout Grid.Row="2" Spacing="10">
+            <Button Text="Добавить транзакцию"
+                    Clicked="OnAddClicked"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="25"
+                    HeightRequest="50" />
 
-        <Button Text="Список транзакций"
-                Clicked="OnListClicked"
-                BackgroundColor="#009688"
-                TextColor="White"
-                CornerRadius="25"
-                HeightRequest="50" />
-    </VerticalStackLayout>
+            <Button Text="Список транзакций"
+                    Clicked="OnListClicked"
+                    BackgroundColor="#009688"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="25"
+                    HeightRequest="50" />
+        </HorizontalStackLayout>
+
+    </Grid>
 </ContentPage>

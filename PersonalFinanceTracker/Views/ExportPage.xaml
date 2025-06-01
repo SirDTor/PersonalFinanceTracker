@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PersonalFinanceTracker.Views.ExportPage"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Title="Экспорт данных"
+    BackgroundColor="#E6F2EE"
+    Padding="20">
+
+    <VerticalStackLayout Spacing="20">
+        <Label Text="Экспортировать транзакции"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+        <HorizontalStackLayout Spacing="10">
+            <VerticalStackLayout>
+                <Label Text="С:" />
+                <DatePicker x:Name="StartDatePicker" Date="{x:Static sys:DateTime.Now}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout>
+                <Label Text="По:" />
+                <DatePicker x:Name="EndDatePicker" Date="{x:Static sys:DateTime.Now}" />
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <Button Text="Экспортировать в CSV"
+                Clicked="OnExportClicked"
+                BackgroundColor="#4CAF50"
+                TextColor="White"
+                CornerRadius="10" />
+
+        <Label x:Name="StatusLabel"
+               TextColor="Gray"
+               FontSize="14"
+               HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentPage>
