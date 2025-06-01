@@ -22,10 +22,9 @@
         </VerticalStackLayout>
 
         <!-- Центр (можно вернуть график сюда позже) -->
-        <!--<microcharts:ChartView Grid.Row="1"
-                                x:Name="ChartView"
-                                HeightRequest="200"
-                                VerticalOptions="Center" />-->
+        <microcharts:ChartView Grid.Row="1"
+                               x:Name="ChartView"                              
+                               VerticalOptions="Center" />
 
         <!-- Низ: Кнопки -->
         <HorizontalStackLayout Grid.Row="2" Spacing="10">

@@ -31,7 +31,14 @@ namespace PersonalFinanceTracker.Views
                     Color = SKColor.Parse("#4CAF50")
                 }).ToList();
 
-            //ChartView.Chart = new DonutChart { Entries = entries };
+            ChartView.Chart = new DonutChart 
+            { 
+                Entries = entries, 
+                LabelMode = LabelMode.RightOnly,
+                LabelTextSize = 30,                
+                BackgroundColor = SKColor.Parse ("#E6F2EE"),
+                AnimationProgress = 5
+            };
 
             BalanceLabel.Text = _dataService.GetBalance().ToString("C0", CultureInfo.CreateSpecificCulture("ru-RU"));
         }
