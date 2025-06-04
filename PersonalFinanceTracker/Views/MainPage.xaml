@@ -15,15 +15,16 @@
                    TextColor="Gray"
                    HorizontalOptions="Center" />
             <Label x:Name="BalanceLabel"
+                   Text="{Binding Balance, StringFormat='{}{0:C}'}"
                    FontSize="32"
                    FontAttributes="Bold"
                    TextColor="Green"
                    HorizontalOptions="Center" />
         </VerticalStackLayout>
 
-        <!-- Центр (можно вернуть график сюда позже) -->
         <microcharts:ChartView Grid.Row="1"
-                               x:Name="ChartView"                              
+                               Chart="{Binding ExpenseChart}"
+                               HeightRequest="250"
                                VerticalOptions="Center" />
 
         <!-- Низ: Кнопки -->
@@ -44,6 +45,5 @@
                     CornerRadius="25"
                     HeightRequest="50" />
         </HorizontalStackLayout>
-
     </Grid>
 </ContentPage>
