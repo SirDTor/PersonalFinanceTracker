@@ -1,35 +1,21 @@
-<ContentPage 
+<ContentPage
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:PersonalFinanceTracker.ViewModels"
     x:Class="PersonalFinanceTracker.Views.PinSettingsPage"
     Title="PIN-код"
-    Padding="20"
-    BackgroundColor="#E6F2EE">
+    BackgroundColor="#E6F2EE"
+    Padding="20">
 
-    <VerticalStackLayout Spacing="20">
+    <ContentPage.BindingContext>
+        <vm:PinSettingsViewModel />
+    </ContentPage.BindingContext>
 
-        <Label Text="Установите или измените PIN-код"
-               FontSize="18"
-               HorizontalOptions="Center" />
-
-        <Entry x:Name="PinEntry"
-               Placeholder="Введите новый PIN"
-               IsPassword="True"
-               Keyboard="Numeric" />
-
-        <Button Text="Сохранить PIN"
-                Clicked="OnSavePinClicked"
-                BackgroundColor="#4CAF50"
-                TextColor="White" />
-
-        <Button Text="Удалить PIN"
-                Clicked="OnRemovePinClicked"
-                BackgroundColor="#F44336"
-                TextColor="White" />
-
-        <Label x:Name="StatusLabel"
-               FontSize="14"
-               TextColor="Gray"
-               HorizontalOptions="Center" />
+    <VerticalStackLayout Spacing="15">
+        <Label Text="Введите новый PIN-код:" FontSize="18"/>
+        <Entry Text="{Binding NewPin}" IsPassword="True" Keyboard="Numeric" MaxLength="6" />
+        <Button Text="Сохранить PIN-код" Command="{Binding SavePinCommand}" />
+        <Button Text="Удалить PIN-код" Command="{Binding RemovePinCommand}" BackgroundColor="DarkRed" TextColor="White"/>
+        <Label Text="{Binding StatusMessage}" FontSize="14" TextColor="Gray"/>
     </VerticalStackLayout>
 </ContentPage>

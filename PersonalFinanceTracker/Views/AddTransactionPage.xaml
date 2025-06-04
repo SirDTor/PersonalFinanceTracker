@@ -1,39 +1,29 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="PersonalFinanceTracker.Views.AddTransactionPage"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    Title="Новая операция"
-    BackgroundColor="#F4F9F4">
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PersonalFinanceTracker.Views.AddTransactionPage"
+             Title="Добавить трату"
+             BackgroundColor="#E6F2EE">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <Label Text="Категория" />
+        <Picker ItemsSource="{Binding Categories}"
+                SelectedItem="{Binding SelectedCategory}" />
 
-            <Label Text="Сумма" FontSize="18" />
-            <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="Введите сумму" BackgroundColor="White" FontSize="18" />
+        <Label Text="Описание" />
+        <Entry Text="{Binding Description}" />
 
-            <Label Text="Категория" FontSize="18" />
-            <Picker x:Name="CategoryPicker"
-                    Title="Выберите категорию"
-                    ItemsSource="{Binding Categories}"
-                    SelectedItem="{Binding SelectedCategory, Mode=TwoWay}"
-                    FontSize="18" />
+        <Label Text="Тип:" VerticalOptions="Center" />
+        <Picker Title="Выберите тип" ItemsSource="{Binding TransactionTypes}" SelectedItem="{Binding SelectedTransactionType}" />
 
-            <Label Text="Описание" FontSize="18" />
-            <Entry x:Name="DescriptionEntry" Placeholder="Напишите заметку (необязательно)" BackgroundColor="White" FontSize="18" />
+        <Label Text="Сумма" />
+        <Entry Keyboard="Numeric" Text="{Binding Amount}" />
 
-            <Label Text="Дата" FontSize="18" />
-            <DatePicker x:Name="TransactionDatePicker" Date="{x:Static sys:DateTime.Now}" FontSize="18" />
+        <Label Text="Дата" />
+        <DatePicker Date="{Binding Date}" />
 
-            <Button 
-                Text="Добавить" 
+        <Button Text="Добавить"
+                Command="{Binding AddTransactionCommand}"
                 BackgroundColor="#4CAF50"
-                TextColor="White"
-                FontSize="20"
-                CornerRadius="10"
-                Clicked="OnAddTransactionClicked" />
-
-        </VerticalStackLayout>
-    </ScrollView>
+                TextColor="White" />
+    </VerticalStackLayout>
 </ContentPage>

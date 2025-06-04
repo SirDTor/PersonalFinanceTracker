@@ -9,6 +9,7 @@ namespace PersonalFinanceTracker.Models
         Expense,
         Income
     }
+
     public class Transaction
     {
         [PrimaryKey, AutoIncrement]
@@ -20,8 +21,26 @@ namespace PersonalFinanceTracker.Models
 
         public decimal Amount { get; set; }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public DateTime Date { get; set; }
+
+        public Transaction() { }
+
+        public string AmountDisplay
+        {
+            get
+            {
+                var sign = Type == TransactionType.Income ? "+" : "-";
+                return $"{sign}{Amount:C}";
+            }
+        }
+        public string AmountColor
+        {
+            get
+            {
+                return Type == TransactionType.Income ? "Green" : "Red";
+            }
+        }
     }
 }

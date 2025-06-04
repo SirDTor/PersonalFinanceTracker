@@ -3,9 +3,14 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="PersonalFinanceTracker.Views.SettingsPage"
+    xmlns:vm="clr-namespace:PersonalFinanceTracker.ViewModels"
     Title="Настройки"
     BackgroundColor="#E6F2EE"
     Padding="20">
+
+    <ContentPage.BindingContext>
+        <vm:SettingsViewModel />
+    </ContentPage.BindingContext>
 
     <VerticalStackLayout Spacing="25">
 
@@ -14,31 +19,25 @@
                FontAttributes="Bold"
                HorizontalOptions="Center" />
 
-        <!-- Экспорт -->
         <Button Text="Экспорт транзакций"
-                Clicked="OnExportNavigateClicked"
+                Command="{Binding NavigateToExportCommand}"
                 BackgroundColor="#2196F3"
                 TextColor="White"
                 CornerRadius="10" />
 
-        <!-- Очистка данных -->
         <Button Text="Удалить все данные"
-                Clicked="OnDeleteAllClicked"
+                Command="{Binding DeleteAllCommand}"
                 BackgroundColor="#F44336"
                 TextColor="White"
                 CornerRadius="10" />
 
-        <!--Настройка PIN кода-->
         <Button Text="Настроить PIN-код"
-                Clicked="OnPinSettingsClicked"
+                Command="{Binding NavigateToPinSettingsCommand}"
                 BackgroundColor="#9C27B0"
                 TextColor="White"
                 CornerRadius="10" />
 
-        <!-- (Опционально) Переключение темы -->
-        <!--<SwitchCell Text="Темная тема" OnChanged="OnThemeSwitchChanged" />-->
-
-        <Label x:Name="StatusLabel"
+        <Label Text="{Binding StatusMessage}"
                FontSize="14"
                TextColor="Gray"
                HorizontalOptions="Center" />

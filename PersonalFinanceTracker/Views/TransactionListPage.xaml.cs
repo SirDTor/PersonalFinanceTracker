@@ -1,20 +1,17 @@
 using PersonalFinanceTracker.Services;
+using PersonalFinanceTracker.ViewModels;
 
-namespace PersonalFinanceTracker.Views;
-
-public partial class TransactionListPage : ContentPage
+namespace PersonalFinanceTracker.Views
 {
-    private DatabaseService _dataService;
-
-    public TransactionListPage()
+    public partial class TransactionListPage : ContentPage
     {
-        InitializeComponent();
-        _dataService = new DatabaseService(Path.Combine(FileSystem.AppDataDirectory, "financedb.db"));
-        LoadTransactions();
-    }
+        private readonly TransactionListViewModel _viewModel;
 
-    private void LoadTransactions()
-    {
-        TransactionList.ItemsSource = _dataService.GetAll();
+        public TransactionListPage(DatabaseService db)
+        {
+            InitializeComponent();
+            _viewModel = new TransactionListViewModel(db);
+            BindingContext = _viewModel;
+        }
     }
 }

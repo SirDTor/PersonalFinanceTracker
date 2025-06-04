@@ -13,14 +13,16 @@ namespace PersonalFinanceTracker.Views
     {
         private MainViewModel _viewModel;
 
+        private DatabaseService _databaseService;
+
         public MainPage()
         {
             InitializeComponent();
 
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "financedb.db");
-            var dbService = new DatabaseService(dbPath);
+            _databaseService = new DatabaseService(dbPath);
 
-            _viewModel = new MainViewModel(dbService);
+            _viewModel = new MainViewModel(_databaseService);
             BindingContext = _viewModel;
         }
 
@@ -32,12 +34,12 @@ namespace PersonalFinanceTracker.Views
 
         private async void OnAddClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new AddTransactionPage());
+            await Navigation.PushAsync(new AddTransactionPage(_databaseService));
         }
 
         private async void OnListClicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new TransactionListPage());
+            await Navigation.PushAsync(new TransactionListPage(_databaseService));
         }
     }
 

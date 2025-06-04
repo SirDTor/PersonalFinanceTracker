@@ -12,11 +12,6 @@
                       Icon="dotnet_bot.png">
             <local:MainPage/>
         </ShellContent>
-        <ShellContent Title="+"
-                      Route="AddTransactionPage"
-                      Icon="dotnet_bot.png">
-            <local:AddTransactionPage/>
-        </ShellContent>
         <ShellContent Title="Настройки"
                       Route="SettingsPage"
                       Icon="dotnet_bot.png">

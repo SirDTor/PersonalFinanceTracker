@@ -22,9 +22,12 @@ namespace PersonalFinanceTracker.Services
 
         public void Delete(Transaction transaction) => _db.Delete(transaction);
 
-        public decimal GetBalance() =>
-            _db.Table<Transaction>().Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount)
-            - _db.Table<Transaction>().Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+        public decimal GetBalance()
+        {
+            var income = _db.Table<Transaction>().Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
+            var expense = _db.Table<Transaction>().Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+            return income - expense;
+        }
 
     }
 }

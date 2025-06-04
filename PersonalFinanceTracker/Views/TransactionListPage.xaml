@@ -1,23 +1,50 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PersonalFinanceTracker.Views.TransactionListPage"
-             Title="Транзакции"
-             BackgroundColor="#FAFAFA">
+             Title="Список транзакций"
+             BackgroundColor="#E6F2EE">
 
-    <CollectionView x:Name="TransactionList">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Border Margin="10" Padding="10" BackgroundColor="White">
-                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
-                        <Label Text="{Binding Category}" FontAttributes="Bold" />
-                        <Label Text="{Binding Amount, StringFormat='{}{0:C}'}"
-                               Grid.Column="1"
-                               TextColor="{Binding Type, Converter={StaticResource TypeToColorConverter}}" />
-                        <Label Text="{Binding Date, StringFormat='{}{0:dd MMM yyyy}'}" Grid.Row="1" FontSize="12" TextColor="Gray" />
-                        <Label Text="{Binding Note}" Grid.Row="1" Grid.Column="1" FontSize="12" HorizontalTextAlignment="End" />
-                    </Grid>
-                </Border>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+    <ScrollView Padding="10">
+        <CollectionView ItemsSource="{Binding Transactions}" SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BackgroundColor="White" Margin="5" CornerRadius="10" HasShadow="True">
+                        <Grid ColumnDefinitions="*,Auto" Padding="10">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Category}" FontAttributes="Bold" FontSize="16" />
+                                <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
+                                <Label Text="{Binding Date, StringFormat='Дата: {0:dd.MM.yyyy}'}" FontSize="12" TextColor="Gray"/>
+                            </VerticalStackLayout>
+
+                            <Label Text="{Binding AmountDisplay}"
+                                   TextColor="{Binding AmountColor}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="End"
+                                   VerticalOptions="Center"
+                                   Grid.Column="1"/>
+                            <Label FontSize="16"
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="End"
+                                   VerticalOptions="Center"
+                                   Grid.Column="1">
+                                <!-- Текст: передаем Amount, параметром — Type -->
+                                <Label.Text>
+                                    <Binding Path="Amount"
+                                             Converter="{StaticResource TransactionAmountConverter}"
+                                             ConverterParameter="{Binding Type}" />
+                                </Label.Text>
+                                <!-- Цвет: тоже через конвертер -->
+                                <Label.TextColor>
+                                    <Binding Path="Amount"
+                                             Converter="{StaticResource TransactionAmountConverter}"
+                                             ConverterParameter="{Binding Type}" />
+                                </Label.TextColor>
+                            </Label>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </ScrollView>
 </ContentPage>

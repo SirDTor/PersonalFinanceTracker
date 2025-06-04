@@ -12,20 +12,7 @@ namespace PersonalFinanceTracker
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            // Проверяем, установлен ли PIN
-            Page startPage;
-
-            if (PinService.IsPinSet)
-            {
-                // PIN установлен — сначала открываем PinUnlockPage
-                startPage = new NavigationPage(new Views.PinUnlockPage());
-            }
-            else
-            {
-                // Если PIN не задан — сразу основная оболочка
-                startPage = new AppShell();
-            }
-
+            Page startPage = PinService.IsPinSet ? new NavigationPage(new Views.PinUnlockPage()) : new AppShell();
             return new Window(startPage);
         }        
     }

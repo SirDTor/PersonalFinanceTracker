@@ -71,13 +71,13 @@ namespace PersonalFinanceTracker.ViewModels
         private void UpdateChart()
         {
             var entries = Transactions
-                .Where(t => t.Type == TransactionType.Expense)
+                //.Where(t => t.Type == TransactionType.Expense)
                 .GroupBy(t => t.Category)
                 .Select((g, index) => new ChartEntry((float)g.Sum(t => t.Amount))
                 {
                     Label = g.Key,
                     ValueLabel = g.Sum(t => t.Amount).ToString("F0") + "₽",
-                    Color = GetColorForCategory(g.Key)  // 👈 Цвет на категорию
+                    Color = GetColorForCategory(g.Key)
                 }).ToList();
 
             ExpenseChart = new DonutChart
@@ -100,6 +100,8 @@ namespace PersonalFinanceTracker.ViewModels
                 "Транспорт" => SKColor.Parse("#6B5B95"),
                 "Развлечения" => SKColor.Parse("#88B04B"),
                 "Здоровье" => SKColor.Parse("#FFA07A"),
+                "Поступление средств" => SKColor.Parse("#6BE53E"),
+                "Перевод средств" => SKColor.Parse("#E5973E"),
                 "Другое" => SKColor.Parse("#00ACC1"),
                 _ => SKColor.Parse("#607D8B")
             };
