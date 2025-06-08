@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:PersonalFinanceTracker.ViewModels"
+    x:Class="PersonalFinanceTracker.Views.ExportPage"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Title="Экспорт"
+    BackgroundColor="#E6F2EE"
+    Padding="20">
+
+    <ContentPage.BindingContext>
+        <vm:ExportViewModel />
+    </ContentPage.BindingContext>
+
+    <VerticalStackLayout Spacing="25">
+
+        <Label Text="Экспорт транзакций"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center" />
+
+        <HorizontalStackLayout Spacing="20">
+            <VerticalStackLayout>
+                <Label Text="С:" />
+                <DatePicker Date="{Binding StartDate}" />
+            </VerticalStackLayout>
+
+            <VerticalStackLayout>
+                <Label Text="По:" />
+                <DatePicker Date="{Binding EndDate}" />
+            </VerticalStackLayout>
+        </HorizontalStackLayout>
+
+        <Button Text="Поделиться CSV"
+                Command="{Binding ExportToCsvCommand}"
+                BackgroundColor="#607D8B"
+                TextColor="Azure"
+                CornerRadius="10" />
+
+        <Button Text="Поделиться XLSX"
+                Command="{Binding ExportToXLSXCommand}"
+                BackgroundColor="#607D8B"
+                TextColor="Azure"
+                CornerRadius="10" />
+
+        <Button Text="Поделиться PDF"
+                Command="{Binding ExportToPDFCommand}"
+                BackgroundColor="#607D8B"
+                TextColor="Azure"
+                CornerRadius="10" />
+
+        <Label Text="{Binding ExportStatus}"
+               FontSize="14"
+               TextColor="Gray"
+               HorizontalOptions="Center"
+               LineBreakMode="WordWrap" />
+    </VerticalStackLayout>
+</ContentPage>

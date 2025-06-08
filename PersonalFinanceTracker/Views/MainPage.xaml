@@ -1,0 +1,119 @@
+﻿<ContentPage 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:PersonalFinanceTracker.Views"
+    xmlns:local="clr-namespace:PersonalFinanceTracker.ViewModels"
+    xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+    x:Class="PersonalFinanceTracker.Views.MainPage"
+    Title="Финансы"
+    BackgroundColor="#E6F2EE"
+    NavigationPage.HasNavigationBar="False">
+
+    <ContentPage.BindingContext>
+        <local:MainViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto, *, Auto">
+        <!-- Верхняя панель с настройками-->
+        <ImageButton Grid.Row="0"
+                     Margin="6"
+                     Source="settings_button.svg"
+                     Clicked="OnSettingsClicked"
+                     WidthRequest="32"
+                     HeightRequest="32"
+                     BackgroundColor="Transparent"
+                     HorizontalOptions="End"/>
+
+        <ScrollView Grid.Row="1" Margin="6,0,6,0">
+            <VerticalStackLayout Spacing="20">
+                <!-- Доход и Расход -->
+                <Frame CornerRadius="15" Padding="20">
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,*" Padding="0">
+                            <Label Grid.Column="0"
+                                   Text="{Binding MonthlyIncome, StringFormat='Доход за месяц: {0:C0}'}"
+                                   FontSize="16"/>
+                            <Label Grid.Column="1"
+                                   Text="{Binding MonthlyExpense, StringFormat='Расход за месяц: {0:C0}'}"
+                                   FontSize="16"
+                                   HorizontalOptions="End" />
+                        </Grid>
+                        <!-- Место под график -->
+                        <microcharts:ChartView Chart="{Binding ExpenseChart}"
+                                               HeightRequest="250"
+                                               VerticalOptions="Center" />
+                    </VerticalStackLayout>
+                </Frame>
+                <!-- Кнопки -->
+                <Grid ColumnDefinitions="*,*" Padding="0">
+                    <Button Grid.Column="0"
+                            Text="Аналитика"
+                            Margin="3"
+                            CornerRadius="10"/>
+                    <Button Grid.Column="1"
+                            Text="История"
+                            Margin="3"
+                            Clicked="OnHistoryClicked"
+                            CornerRadius="10"/>
+                </Grid>
+
+                <!-- Цели -->
+                <VerticalStackLayout>
+                    <!-- Заголовок -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Grid.Column="0" Text="Цели" FontSize="20" VerticalOptions="Center"/>
+                        <Button Grid.Column="1" Text="См. все" FontSize="14" Clicked="OnViewGoalsClicked" />
+                    </Grid>
+                    <!-- Список целей -->
+                    <ScrollView Orientation="Horizontal">
+                        <HorizontalStackLayout BindableLayout.ItemsSource="{Binding Goals}" Spacing="10" Padding="0,10">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Frame WidthRequest="160" HeightRequest="120"
+                                           CornerRadius="10"
+                                           BackgroundColor="White"
+                                           Padding="10"
+                                           HasShadow="True">
+                                        <VerticalStackLayout VerticalOptions="Center" Spacing="5">
+                                            <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" />
+                                            <ProgressBar Progress="{Binding Progress}" HeightRequest="8" />
+                                            <Label Text="{Binding CurrentAmount, StringFormat='Накоплено: {0:C}'}"
+                                                   FontSize="12" TextColor="Gray"/>
+                                        </VerticalStackLayout>
+                                    </Frame>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </HorizontalStackLayout>
+                    </ScrollView>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Нижняя панель -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Padding="0,10" BackgroundColor="#848d8a">
+            <VerticalStackLayout Grid.Column="0" Margin="16,0,0,0">
+                <Label Text="Остаток"
+                       TextColor="White"
+                       FontSize="16"
+                       FontAttributes="Bold"/>
+                <Label Text="{Binding Balance, StringFormat='{0:C0}'}"
+                       TextColor="White"
+                       FontSize="30"                       
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" />
+            </VerticalStackLayout>
+            <Button Grid.Column="1"
+                    Text="+"
+                    Clicked="OnAddTransactionClicked"
+                    FontSize="26"
+                    FontAttributes="Bold"
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    CornerRadius="25"
+                    Padding="0"
+                    Margin="0,0,16,0"
+                    BackgroundColor="#2196F3"
+                    HorizontalOptions="End"/>
+        </Grid>
+    </Grid>
+</ContentPage>

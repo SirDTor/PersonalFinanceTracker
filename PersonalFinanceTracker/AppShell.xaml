@@ -3,13 +3,10 @@
     x:Class="PersonalFinanceTracker.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:PersonalFinanceTracker"
-    Shell.FlyoutBehavior="Flyout"
+    xmlns:local="clr-namespace:PersonalFinanceTracker.Views"
+    Shell.FlyoutBehavior="Disabled"
     Title="PersonalFinanceTracker">
-
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
+    <ShellContent Title="Финансы" ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage"/>
+    <ShellContent Title="Цели" ContentTemplate="{DataTemplate local:GoalsPage}" Route="GoalsPage" />
+    <ShellContent Route="AddGoalPage" ContentTemplate="{DataTemplate local:AddGoalPage}" />
 </Shell>

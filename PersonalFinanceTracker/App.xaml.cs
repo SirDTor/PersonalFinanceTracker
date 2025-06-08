@@ -1,4 +1,7 @@
-﻿namespace PersonalFinanceTracker
+﻿using PersonalFinanceTracker.Services;
+using System.Globalization;
+
+namespace PersonalFinanceTracker
 {
     public partial class App : Application
     {
@@ -7,9 +10,12 @@
             InitializeComponent();
         }
 
+        public static object DatabaseService { get; internal set; }
+
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
-        }
+            Page startPage = PinService.IsPinSet ? new NavigationPage(new Views.PinUnlockPage()) : new AppShell();
+            return new Window(startPage);
+        }        
     }
 }
