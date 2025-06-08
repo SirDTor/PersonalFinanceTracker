@@ -6,62 +6,83 @@
              BackgroundColor="#E6F2EE">
 
     <ScrollView Padding="10">
-        <CollectionView ItemsSource="{Binding Transactions}" SelectionMode="None">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <SwipeView>
-                        <SwipeView.RightItems>
-                            <SwipeItems Mode="Reveal">
-                                <SwipeItem Text="Изменить"
+        <VerticalStackLayout>
+            <!-- Блок фильтра -->
+            <Grid RowDefinitions="*,*">
+                <Grid Grid.Row="0" ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <DatePicker Grid.Column="0" Date="{Binding StartDate}" />
+                    <DatePicker Grid.Column="1" Date="{Binding EndDate}" />
+                </Grid>
+                <Grid Grid.Row="1" ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Picker Grid.Column="0"
+                            Title="Категория"
+                            ItemsSource="{Binding Categories}"
+                            SelectedItem="{Binding SelectedCategory}" />
+                    <Button Grid.Column="1" 
+                            Text="Применить"
+                            BackgroundColor="#4CAF50"
+                            TextColor="White"
+                            Command="{Binding ApplyFilterCommand}" />
+                </Grid>
+            </Grid>
+
+            <CollectionView ItemsSource="{Binding Transactions}" SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems Mode="Reveal">
+                                    <SwipeItem Text="Изменить"
                                            BackgroundColor="#FF9800"
                                            Command="{Binding BindingContext.EditCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
                                            CommandParameter="{Binding .}" />
-                                <SwipeItem Text="Удалить"
+                                    <SwipeItem Text="Удалить"
                                            BackgroundColor="#F44336"
                                            Command="{Binding BindingContext.DeleteCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
                                            CommandParameter="{Binding .}" />
-                            </SwipeItems>
-                        </SwipeView.RightItems>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
 
 
-                        <Frame BackgroundColor="White" Margin="5" CornerRadius="10" HasShadow="True">
-                            <Grid ColumnDefinitions="*,Auto" Padding="10">
-                                <VerticalStackLayout>
-                                    <Label Text="{Binding Category}" FontAttributes="Bold" FontSize="16" />
-                                    <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
-                                    <Label Text="{Binding Date, StringFormat='Дата: {0:dd.MM.yyyy}'}" FontSize="12" TextColor="Gray"/>
-                                </VerticalStackLayout>
+                            <Frame BackgroundColor="White" Margin="5" CornerRadius="10" HasShadow="True">
+                                <Grid ColumnDefinitions="*,Auto" Padding="10">
+                                    <VerticalStackLayout>
+                                        <Label Text="{Binding Category}" FontAttributes="Bold" FontSize="16" />
+                                        <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
+                                        <Label Text="{Binding Date, StringFormat='Дата: {0:dd.MM.yyyy}'}" FontSize="12" TextColor="Gray"/>
+                                    </VerticalStackLayout>
 
-                                <Label Text="{Binding AmountDisplay}"
+                                    <Label Text="{Binding AmountDisplay}"
                                        TextColor="{Binding AmountColor}"
                                        FontSize="16"
                                        FontAttributes="Bold"
                                        HorizontalOptions="End"
                                        VerticalOptions="Center"
                                        Grid.Column="1"/>
-                                <Label FontSize="16"
+                                    <Label FontSize="16"
                                        FontAttributes="Bold"
                                        HorizontalOptions="End"
                                        VerticalOptions="Center"
                                        Grid.Column="1">
-                                    <!-- Текст: передаем Amount, параметром — Type -->
-                                    <Label.Text>
-                                        <Binding Path="Amount"
+                                        <!-- Текст: передаем Amount, параметром — Type -->
+                                        <Label.Text>
+                                            <Binding Path="Amount"
                                                  Converter="{StaticResource TransactionAmountConverter}"
                                                  ConverterParameter="{Binding Type}" />
-                                    </Label.Text>
-                                    <!-- Цвет: тоже через конвертер -->
-                                    <Label.TextColor>
-                                        <Binding Path="Amount"
+                                        </Label.Text>
+                                        <!-- Цвет: тоже через конвертер -->
+                                        <Label.TextColor>
+                                            <Binding Path="Amount"
                                                  Converter="{StaticResource TransactionAmountConverter}"
                                                  ConverterParameter="{Binding Type}" />
-                                    </Label.TextColor>
-                                </Label>
-                            </Grid>
-                        </Frame>
-                    </SwipeView>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+                                        </Label.TextColor>
+                                    </Label>
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

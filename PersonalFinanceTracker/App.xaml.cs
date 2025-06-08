@@ -10,6 +10,8 @@ namespace PersonalFinanceTracker
             InitializeComponent();
         }
 
+        public static object DatabaseService { get; internal set; }
+
         protected override Window CreateWindow(IActivationState? activationState)
         {
             Page startPage = PinService.IsPinSet ? new NavigationPage(new Views.PinUnlockPage()) : new AppShell();

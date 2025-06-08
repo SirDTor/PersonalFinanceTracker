@@ -14,24 +14,17 @@
     </ContentPage.BindingContext>
 
     <Grid RowDefinitions="Auto, *, Auto">
-        <!-- Верхняя панель с заголовком и шестерёнкой -->
-        <Grid ColumnDefinitions="*,*">
-            <!--<Label Grid.Column="0" 
-                   Text="Финансы"
-                   FontSize="28"
-                   FontAttributes="Bold"                   
-                   HorizontalOptions="Start"
-                   VerticalOptions="Center"/>-->
-            <ImageButton Grid.Column="1"
-                         Source="dotnet_bot.png"
-                         Clicked="OnSettingsClicked"
-                         WidthRequest="32"
-                         HeightRequest="32"
-                         BackgroundColor="Transparent"
-                         HorizontalOptions="End"/>
-        </Grid>
+        <!-- Верхняя панель с настройками-->
+        <ImageButton Grid.Row="0"
+                     Margin="6"
+                     Source="settings_button.svg"
+                     Clicked="OnSettingsClicked"
+                     WidthRequest="32"
+                     HeightRequest="32"
+                     BackgroundColor="Transparent"
+                     HorizontalOptions="End"/>
 
-        <ScrollView Grid.Row="1">
+        <ScrollView Grid.Row="1" Margin="6,0,6,0">
             <VerticalStackLayout Spacing="20">
                 <!-- Доход и Расход -->
                 <Frame CornerRadius="15" Padding="20">
@@ -68,7 +61,7 @@
                 <VerticalStackLayout>
                     <!-- Заголовок -->
                     <Grid ColumnDefinitions="*,Auto">
-                        <Label Grid.Column="0" Text="Цели" FontSize="20"/>
+                        <Label Grid.Column="0" Text="Цели" FontSize="20" VerticalOptions="Center"/>
                         <Button Grid.Column="1" Text="См. все" FontSize="14" Clicked="OnViewGoalsClicked" />
                     </Grid>
                     <!-- Список целей -->
@@ -92,21 +85,6 @@
                             </BindableLayout.ItemTemplate>
                         </HorizontalStackLayout>
                     </ScrollView>
-                    <!-- Карточка для добавления новой цели -->
-                    <!--<Frame HeightRequest="80"
-                           CornerRadius="10"
-                           Padding="10"
-                           BackgroundColor="#F5F5F5">
-                        <Grid>
-                            <Label Text="Нажмите, чтобы добавить цель"
-                                   FontSize="14" TextColor="Gray"
-                                   HorizontalTextAlignment="Center"
-                                   VerticalTextAlignment="Center"/>
-                            <Grid.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnAddGoalTapped"/>
-                            </Grid.GestureRecognizers>
-                        </Grid>
-                    </Frame>-->
                 </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>

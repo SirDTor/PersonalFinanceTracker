@@ -31,13 +31,7 @@
                 <DatePicker Date="{Binding EndDate}" />
             </VerticalStackLayout>
         </HorizontalStackLayout>
-        
-        <Button Text="Поделиться TXT"
-                Command="{Binding ExportToTxtCommand}"
-                BackgroundColor="#607D8B"
-                TextColor="White"
-                CornerRadius="10" />
-        
+
         <Button Text="Поделиться CSV"
                 Command="{Binding ExportToCsvCommand}"
                 BackgroundColor="#607D8B"
@@ -46,6 +40,12 @@
 
         <Button Text="Поделиться XLSX"
                 Command="{Binding ExportToXLSXCommand}"
+                BackgroundColor="#607D8B"
+                TextColor="Azure"
+                CornerRadius="10" />
+
+        <Button Text="Поделиться PDF"
+                Command="{Binding ExportToPDFCommand}"
                 BackgroundColor="#607D8B"
                 TextColor="Azure"
                 CornerRadius="10" />

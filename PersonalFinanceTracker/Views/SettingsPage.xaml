@@ -24,6 +24,12 @@
                 BackgroundColor="#2196F3"
                 TextColor="White"
                 CornerRadius="10" />
+        
+        <Button Text="Импортировать данные"
+                Command="{Binding ImportDataCommand}"
+                BackgroundColor="#2196F3"
+                TextColor="White"
+                CornerRadius="10"/>
 
         <Button Text="Удалить все данные"
                 Command="{Binding DeleteAllCommand}"
