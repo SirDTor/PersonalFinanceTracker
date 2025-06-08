@@ -1,8 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using PersonalFinanceTracker.Models;
+using PersonalFinanceTracker.Services;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using PersonalFinanceTracker.Models;
-using PersonalFinanceTracker.Services;
+using System.Windows.Input;
 
 namespace PersonalFinanceTracker.ViewModels
 {
@@ -12,11 +13,17 @@ namespace PersonalFinanceTracker.ViewModels
 
         public ObservableCollection<Transaction> Transactions { get; set; }
 
+        public ICommand DeleteCommand { get; }
+        
+        public ICommand EditCommand { get; }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public TransactionListViewModel(DatabaseService db)
         {
             _databaseService = db;
+            DeleteCommand = new Command<Transaction>(DeleteTransaction);
+            EditCommand = new Command<Transaction>(EditTransaction);
             LoadTransactions();
         }
 
@@ -27,11 +34,23 @@ namespace PersonalFinanceTracker.ViewModels
             OnPropertyChanged(nameof(Transactions));
         }
 
-        public void DeleteTransaction(Transaction transaction)
+        private async void EditTransaction(Transaction transaction)
         {
+            if (transaction == null) return;
+
+            await Shell.Current.GoToAsync("EditTransactionPage", new Dictionary<string, object>
+            {
+                { "Transaction", transaction }
+            });
+        }
+
+        private async void DeleteTransaction(Transaction transaction)
+        {
+            bool confirm = await Application.Current.MainPage.DisplayAlert("Удаление", "Удалить транзакцию?", "Да", "Нет");
+            if (!confirm) return;
+
             _databaseService.Delete(transaction);
             Transactions.Remove(transaction);
-            OnPropertyChanged(nameof(Transactions));
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null) =>

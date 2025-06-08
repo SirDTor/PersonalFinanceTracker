@@ -39,35 +39,17 @@ namespace PersonalFinanceTracker.ViewModels
 
         public ICommand ExportToCsvCommand { get; }
         public ICommand ExportToTxtCommand { get; }
-        public ICommand ExportCommand { get; }
+        public ICommand ExportToXLSXCommand { get; }
 
         public ExportViewModel()
         {
             _dataService = new DatabaseService(Path.Combine(FileSystem.AppDataDirectory, "financedb.db"));
 
-            ExportToCsvCommand = new Command(ExportToCsv);
             ExportToTxtCommand = new Command(ExportToTxt);
-            ExportCommand = new Command(async () => await ExportToCsvAsync());
+            ExportToCsvCommand = new Command(async () => await ExportToCsvAsync());
 
             StartDate = DateTime.Now.Date;
             EndDate = DateTime.Now.Date;
-        }
-
-        private void ExportToCsv()
-        {
-            var transactions = _dataService.GetAll();
-            var path = Path.Combine(FileSystem.AppDataDirectory, $"export_{DateTime.Now:yyyyMMddHHmmss}.csv");
-
-            using (var writer = new StreamWriter(path))
-            {
-                writer.WriteLine("Дата,Категория,Тип,Сумма,Описание");
-                foreach (var t in transactions)
-                {
-                    writer.WriteLine($"{t.Date:d},{t.Category},{t.Type},{t.Amount},{t.Description}");
-                }
-            }
-
-            ExportStatus = $"CSV экспортирован: {path}";
         }
 
         private async Task ExportToCsvAsync()

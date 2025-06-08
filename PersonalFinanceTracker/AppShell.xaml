@@ -6,16 +6,7 @@
     xmlns:local="clr-namespace:PersonalFinanceTracker.Views"
     Shell.FlyoutBehavior="Disabled"
     Title="PersonalFinanceTracker">
-    <TabBar>
-        <ShellContent Title="Финансы"
-                      Route="MainPage"
-                      Icon="dotnet_bot.png">
-            <local:MainPage/>
-        </ShellContent>
-        <ShellContent Title="Настройки"
-                      Route="SettingsPage"
-                      Icon="dotnet_bot.png">
-            <local:SettingsPage/>
-        </ShellContent>
-    </TabBar>
+    <ShellContent Title="Финансы" ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage"/>
+    <ShellContent Title="Цели" ContentTemplate="{DataTemplate local:GoalsPage}" Route="GoalsPage" />
+    <ShellContent Route="AddGoalPage" ContentTemplate="{DataTemplate local:AddGoalPage}" />
 </Shell>

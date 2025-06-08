@@ -11,6 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
             <!--<local:TypeToColorConverter x:Key="TypeToColorConverter" />-->
             <local:TransactionAmountConverter x:Key="TransactionAmountConverter"/>
+            <local:GoalProgressConverter x:Key="GoalProgressConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

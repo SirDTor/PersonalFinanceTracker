@@ -1,0 +1,52 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PersonalFinanceTracker.Views.GoalsPage"
+             xmlns:views="clr-namespace:PersonalFinanceTracker.Views"
+             Title="Цели"
+             BackgroundColor="#E6F2EE">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <Button Text="Добавить цель" Clicked="OnAddGoalClicked" BackgroundColor="#4CAF50" TextColor="White"/>
+
+        <CollectionView ItemsSource="{Binding Goals}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <SwipeView>
+                        <SwipeView.RightItems>
+                            <SwipeItems Mode="Reveal">
+                                <SwipeItem Text="Изменить"
+                                           BackgroundColor="#FF9800"                                          
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type views:GoalsPage}}, Path=BindingContext.EditCommand}"
+                                           CommandParameter="{Binding .}" />
+                                <SwipeItem Text="Удалить"
+                                           BackgroundColor="#F44336"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type views:GoalsPage}}, Path=BindingContext.DeleteCommand}"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.RightItems>
+
+                        <SwipeView.LeftItems>
+                            <SwipeItems Mode="Reveal">
+                                <SwipeItem Text="Пополнить"
+                                           BackgroundColor="#4CAF50"
+                                           Command="{Binding Source={RelativeSource AncestorType={x:Type views:GoalsPage}}, Path=BindingContext.TopUpCommand}"
+                                           CommandParameter="{Binding .}" />
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+                        
+                        <Frame BackgroundColor="White" CornerRadius="10" Padding="15" Margin="5">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold"/>
+                                <Label Text="{Binding TargetAmount, StringFormat='Цель: {0:C}'}" />
+                                <Label Text="{Binding CurrentAmount, StringFormat='Накоплено: {0:C}'}" />
+                                <ProgressBar Progress="{Binding Progress}" />
+                                <Label Text="{Binding Deadline, StringFormat='До: {0:dd.MM.yyyy}'}" FontSize="12" TextColor="Gray"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>

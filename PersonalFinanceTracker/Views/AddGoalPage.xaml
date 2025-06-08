@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PersonalFinanceTracker.Views.AddGoalPage"
+             Title="Новая цель"
+             BackgroundColor="#E6F2EE"
+             Padding="20">
+
+    <VerticalStackLayout Spacing="15">
+        <Label Text="Название цели" FontAttributes="Bold" />
+        <Entry x:Name="TitleEntry" Placeholder="Напр. Новый ноутбук" />
+
+        <Label Text="Сумма" FontAttributes="Bold" />
+        <Entry x:Name="TargetAmountEntry" Keyboard="Numeric" Placeholder="100000" />
+
+        <Label Text="Срок (дата завершения)" FontAttributes="Bold" />
+        <DatePicker x:Name="TargetDatePicker" />
+
+        <Button Text="Сохранить"
+                Clicked="OnSaveClicked"
+                BackgroundColor="#4CAF50"
+                TextColor="White"
+                CornerRadius="10"/>
+    </VerticalStackLayout>
+</ContentPage>

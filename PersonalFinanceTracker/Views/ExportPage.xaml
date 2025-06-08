@@ -32,20 +32,20 @@
             </VerticalStackLayout>
         </HorizontalStackLayout>
         
-        <Button Text="Экспорт в CSV"
-                Command="{Binding ExportToCsvCommand}"
-                BackgroundColor="#03A9F4"
-                TextColor="White"
-                CornerRadius="10" />
-
-        <Button Text="Экспорт в TXT"
+        <Button Text="Поделиться TXT"
                 Command="{Binding ExportToTxtCommand}"
                 BackgroundColor="#607D8B"
                 TextColor="White"
                 CornerRadius="10" />
         
-        <Button Text="Поделится"
-                Command="{Binding ExportCommand}"
+        <Button Text="Поделиться CSV"
+                Command="{Binding ExportToCsvCommand}"
+                BackgroundColor="#607D8B"
+                TextColor="Azure"
+                CornerRadius="10" />
+
+        <Button Text="Поделиться XLSX"
+                Command="{Binding ExportToXLSXCommand}"
                 BackgroundColor="#607D8B"
                 TextColor="Azure"
                 CornerRadius="10" />
