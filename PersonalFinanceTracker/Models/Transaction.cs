@@ -54,6 +54,7 @@ namespace PersonalFinanceTracker.Models
         }
 
         public string AmountDisplay => $"{(Type == TransactionType.Income ? "+" : "-")}{Amount:C}";
+
         public string AmountColor => Type == TransactionType.Income ? "Green" : "Red";
 
         protected void OnPropertyChanged([CallerMemberName] string? name = null) =>

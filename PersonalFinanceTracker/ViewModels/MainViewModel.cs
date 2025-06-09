@@ -6,6 +6,7 @@ using SkiaSharp;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -110,7 +111,7 @@ namespace PersonalFinanceTracker.ViewModels
                 .Select((g, index) => new ChartEntry((float)g.Sum(t => t.Amount))
                 {
                     Label = g.Key,
-                    ValueLabel = g.Sum(t => t.Amount).ToString("F0") + "₽",
+                    ValueLabel = g.Sum(t => t.Amount).ToString("C0", CultureInfo.CurrentCulture),
                     Color = GetColorForCategory(g.Key)
                 }).ToList();
 
