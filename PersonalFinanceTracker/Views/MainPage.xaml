@@ -56,7 +56,7 @@
                             Clicked="OnHistoryClicked"
                             CornerRadius="10"/>
                 </Grid>
-
+                
                 <!-- Цели -->
                 <VerticalStackLayout>
                     <!-- Заголовок -->
