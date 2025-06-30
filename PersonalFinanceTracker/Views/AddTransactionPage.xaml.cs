@@ -5,7 +5,7 @@ namespace PersonalFinanceTracker.Views
 {
     public partial class AddTransactionPage : ContentPage
     {
-        public AddTransactionPage(DatabaseService db)
+        public AddTransactionPage(IDatabaseService db)
         {
             InitializeComponent();
             BindingContext = new AddTransactionViewModel(db);

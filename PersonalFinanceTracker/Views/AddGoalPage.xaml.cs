@@ -32,7 +32,7 @@ public partial class AddGoalPage : ContentPage
             Deadline = TargetDatePicker.Date
         };
 
-        _viewModel.AddGoal(goal);
+        //_viewModel.AddGoalAsync(goal);
         await Navigation.PopAsync();
     }
 }

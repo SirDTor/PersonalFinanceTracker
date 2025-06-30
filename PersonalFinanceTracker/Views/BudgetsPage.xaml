@@ -1,17 +1,183 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage x:Class="PersonalFinanceTracker.Views.BudgetsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PersonalFinanceTracker.Views.BudgetsPage"
-             Title="Бюджет"
-             BackgroundColor="#E6F2EE"
-             Padding="20">
+             xmlns:vm="clr-namespace:PersonalFinanceTracker.ViewModels"
+             xmlns:models="clr-namespace:PersonalFinanceTracker.Models"
+             Title="{Binding Title}"
+             BackgroundColor="{StaticResource Background}">
 
-    <VerticalStackLayout Spacing="20">
-        <Label Text="Раздел 'Бюджет' пока в разработке"
-               FontSize="20"
-               TextColor="Gray"
-               HorizontalOptions="Center"
-               VerticalOptions="CenterAndExpand" />
-    </VerticalStackLayout>
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header with Add Button -->
+        <Grid Grid.Row="0" 
+              ColumnDefinitions="*,Auto"
+              Padding="16,16,16,8"
+              BackgroundColor="{StaticResource Surface}">
+            <Label Grid.Column="0"
+                   Text="Управление бюджетами"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center" />
+            
+            <Button Grid.Column="1"
+                    Text="+ Новый"
+                    Command="{Binding StartAddBudgetCommand}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    CornerRadius="20"
+                    Padding="16,8" />
+        </Grid>
 
+        <!-- Content -->
+        <ScrollView Grid.Row="1" Padding="16,0">
+            <StackLayout Spacing="16">
+                
+                <!-- Add Budget Form -->
+                <Frame IsVisible="{Binding IsAddingBudget}"
+                       BackgroundColor="{StaticResource Surface}"
+                       BorderColor="{StaticResource Primary}"
+                       CornerRadius="12"
+                       Padding="16">
+                    <StackLayout Spacing="16">
+                        <Label Text="Создать новый бюджет"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Primary}" />
+
+                        <Entry Placeholder="Название бюджета"
+                               Text="{Binding BudgetName}"
+                               BackgroundColor="{StaticResource SurfaceVariant}"
+                               PlaceholderColor="{StaticResource Gray500}" />
+
+                        <Picker Title="Выберите категорию"
+                                ItemsSource="{Binding Categories}"
+                                SelectedItem="{Binding BudgetCategory}"
+                                BackgroundColor="{StaticResource SurfaceVariant}" />
+
+                        <Entry Placeholder="Сумма бюджета"
+                               Text="{Binding BudgetAmount}"
+                               Keyboard="Numeric"
+                               BackgroundColor="{StaticResource SurfaceVariant}" />
+
+                        <Picker Title="Период"
+                                ItemsSource="{Binding BudgetPeriods}"
+                                SelectedItem="{Binding SelectedPeriod}"
+                                BackgroundColor="{StaticResource SurfaceVariant}" />
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                            <DatePicker Grid.Column="0"
+                                        Date="{Binding StartDate}"
+                                        BackgroundColor="{StaticResource SurfaceVariant}" />
+                            
+                            <DatePicker Grid.Column="1"
+                                        Date="{Binding EndDate}"
+                                        IsEnabled="False"
+                                        BackgroundColor="{StaticResource Gray200}" />
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+                            <Button Grid.Column="0"
+                                    Text="Отмена"
+                                    Command="{Binding CancelAddBudgetCommand}"
+                                    BackgroundColor="{StaticResource Gray400}"
+                                    TextColor="White" />
+                            
+                            <Button Grid.Column="1"
+                                    Text="Сохранить"
+                                    Command="{Binding SaveBudgetCommand}"
+                                    BackgroundColor="{StaticResource Success}"
+                                    TextColor="White" />
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Budget List -->
+                <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                             Command="{Binding LoadBudgetsCommand}">
+                    <CollectionView ItemsSource="{Binding Budgets}"
+                                    BackgroundColor="Transparent">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Budget">
+                                <Frame BackgroundColor="{StaticResource Surface}"
+                                       BorderColor="{Binding StatusColor}"
+                                       CornerRadius="12"
+                                       Margin="0,8"
+                                       Padding="16"
+                                       HasShadow="True">
+                                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                                        
+                                        <!-- Budget Name and Category -->
+                                        <Label Grid.Row="0" Grid.Column="0"
+                                               Text="{Binding Name}"
+                                               FontSize="18"
+                                               FontAttributes="Bold" />
+                                        
+                                        <Label Grid.Row="0" Grid.Column="1"
+                                               Text="{Binding Category}"
+                                               FontSize="14"
+                                               TextColor="{StaticResource Gray600}"
+                                               HorizontalOptions="End" />
+
+                                        <!-- Progress Bar -->
+                                        <ProgressBar Grid.Row="1" Grid.ColumnSpan="2"
+                                                     Progress="{Binding SpentPercentage}"
+                                                     ProgressColor="{Binding StatusColor}"
+                                                     BackgroundColor="{StaticResource Gray200}"
+                                                     HeightRequest="8"
+                                                     Margin="0,8" />
+
+                                        <!-- Amount Info -->
+                                        <Label Grid.Row="2" Grid.Column="0"
+                                               Text="{Binding SpentAmount, StringFormat='Потрачено: {0:C}'}"
+                                               FontSize="14"
+                                               TextColor="{Binding StatusColor}" />
+                                        
+                                        <Label Grid.Row="2" Grid.Column="1"
+                                               Text="{Binding BudgetAmount, StringFormat='из {0:C}'}"
+                                               FontSize="14"
+                                               TextColor="{StaticResource Gray600}"
+                                               HorizontalOptions="End" />
+
+                                        <!-- Remaining Amount -->
+                                        <Label Grid.Row="3" Grid.ColumnSpan="2"
+                                               Text="{Binding RemainingAmount, StringFormat='Остаток: {0:C}'}"
+                                               FontSize="12"
+                                               TextColor="{StaticResource Gray500}"
+                                               Margin="0,4,0,0" />
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </RefreshView>
+
+                <!-- Empty State -->
+                <StackLayout IsVisible="{Binding Budgets.Count, Converter={StaticResource IsEmptyConverter}}"
+                             VerticalOptions="CenterAndExpand"
+                             Spacing="16">
+                    <Label Text="📊"
+                           FontSize="48"
+                           HorizontalOptions="Center" />
+                    <Label Text="Нет бюджетов"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center" />
+                    <Label Text="Создайте свой первый бюджет для контроля расходов"
+                           FontSize="14"
+                           TextColor="{StaticResource Gray600}"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center" />
+                </StackLayout>
+
+            </StackLayout>
+        </ScrollView>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator Grid.RowSpan="2"
+                           IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           Color="{StaticResource Primary}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center" />
+    </Grid>
 </ContentPage>

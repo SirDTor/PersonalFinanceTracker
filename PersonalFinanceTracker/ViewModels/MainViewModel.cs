@@ -1,135 +1,155 @@
-﻿using Microcharts;
-using Microsoft.Maui.Controls;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microcharts;
 using PersonalFinanceTracker.Models;
 using PersonalFinanceTracker.Services;
 using SkiaSharp;
-using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Windows.Input;
 
 namespace PersonalFinanceTracker.ViewModels
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public partial class MainViewModel : BaseViewModel
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IDatabaseService _databaseService;
 
-        private decimal _monthlyIncome;
-        private decimal _monthlyExpense;
-        private decimal _balance;
+        [ObservableProperty] decimal monthlyIncome;
+        [ObservableProperty] decimal monthlyExpense;
+        [ObservableProperty] decimal balance;
+        [ObservableProperty] Chart? expenseChart;
+        [ObservableProperty] ObservableCollection<Transaction> recentTransactions = new();
+        [ObservableProperty] ObservableCollection<Goal> goals = new();
+        [ObservableProperty] ObservableCollection<Budget> activeBudgets = new();
+        [ObservableProperty] bool hasOverdueBudgets;
+        [ObservableProperty] int overdueRecurringCount;
 
-        public decimal MonthlyIncome
+        public MainViewModel(IDatabaseService databaseService)
         {
-            get => _monthlyIncome;
-            set => SetProperty(ref _monthlyIncome, value);
+            _databaseService = databaseService;
+            Title = "Главная";
         }
 
-        public decimal MonthlyExpense
+        [RelayCommand]
+        private async Task LoadDataAsync()
         {
-            get => _monthlyExpense;
-            set => SetProperty(ref _monthlyExpense, value);
-        }
-
-        public decimal Balance
-        {
-            get => _balance;
-            set => SetProperty(ref _balance, value);
-        }
-
-        public ObservableCollection<Transaction> Transactions { get; set; }
-        
-        public ObservableCollection<Goal> Goals { get; set; }
-
-
-        public Chart ExpenseChart { get; private set; }
-
-        public ICommand AddTransactionCommand { get; }
-        public ICommand OpenHistoryCommand { get; }
-        public ICommand OpenSettingsCommand { get; }
-        public ICommand OpenGoalsCommand { get; }
-        public ICommand OpenBudgetsCommand { get; }
-
-        public MainViewModel()
-        {
-            _databaseService = new DatabaseService(Path.Combine(FileSystem.AppDataDirectory, "financedb.db"));
-            Transactions = new ObservableCollection<Transaction>();
-            Goals = new ObservableCollection<Goal>();
-
-            AddTransactionCommand = new Command(OnAddTransaction);
-            OpenHistoryCommand = new Command(OnOpenHistory);
-            OpenSettingsCommand = new Command(OnOpenSettings);
-            OpenGoalsCommand = new Command(OnOpenGoals);
-            OpenBudgetsCommand = new Command(OnOpenBudgets);
-
-            LoadData();
-        }
-
-        public void LoadData()
-        {
-            Transactions.Clear();
-            var all = _databaseService.GetAll();
-
-            foreach (var t in all)
-                Transactions.Add(t);
-
-            var now = DateTime.Now;
-            var currentMonthTransactions = all.Where(t => t.Date.Month == now.Month && t.Date.Year == now.Year);
-
-            MonthlyIncome = currentMonthTransactions
-                .Where(t => t.Type == TransactionType.Income)
-                .Sum(t => t.Amount);
-
-            MonthlyExpense = currentMonthTransactions
-                .Where(t => t.Type == TransactionType.Expense)
-                .Sum(t => t.Amount);
-
-            Balance = all.Sum(t => t.Type == TransactionType.Income ? t.Amount : -t.Amount);
-            UpdateChart();
-            // Загрузка целей
-            LoadGoals();
-        }
-
-        private void LoadGoals()
-        {
-            Goals.Clear();
-            var goalsFromDb = _databaseService.GetGoals();
-            foreach (var goal in goalsFromDb)
+            if (IsBusy) return;
+            try
             {
-                Goals.Add(goal);
+                IsBusy = true;
+                await Task.WhenAll(
+                    LoadTransactionsAsync(),
+                    LoadGoalsAsync(),
+                    LoadBudgetsAsync(),
+                    LoadRecurringTransactionsAsync()
+                );
+                UpdateChart();
             }
-            OnPropertyChanged(nameof(Goals));
+            catch (Exception ex)
+            {
+                // TODO: можно подключить IMessageService.ShowError(ex.Message);
+                System.Diagnostics.Debug.WriteLine($"Ошибка загрузки данных: {ex.Message}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        private async Task LoadTransactionsAsync()
+        {
+            await Task.Run(() =>
+            {
+                var all = _databaseService.GetAllTransactions();
+                var recent = all.Take(5).ToList();
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    RecentTransactions.Clear();
+                    foreach (var transaction in recent)
+                        RecentTransactions.Add(transaction);
+                });
+
+                var now = DateTime.Now;
+                var currentMonthTransactions = all.Where(t => t.Date.Month == now.Month && t.Date.Year == now.Year);
+
+                MonthlyIncome = currentMonthTransactions
+                    .Where(t => t.Type == TransactionType.Income)
+                    .Sum(t => t.Amount);
+
+                MonthlyExpense = currentMonthTransactions
+                    .Where(t => t.Type == TransactionType.Expense)
+                    .Sum(t => t.Amount);
+
+                Balance = _databaseService.GetBalance();
+            });
+        }
+
+        private async Task LoadGoalsAsync()
+        {
+            await Task.Run(() =>
+            {
+                var goalsFromDb = _databaseService.GetGoals().Take(3).ToList();
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    Goals.Clear();
+                    foreach (var goal in goalsFromDb)
+                        Goals.Add(goal);
+                });
+            });
+        }
+
+        private async Task LoadBudgetsAsync()
+        {
+            await Task.Run(() =>
+            {
+                var budgets = _databaseService.GetActiveBudgets();
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    ActiveBudgets.Clear();
+                    foreach (var budget in budgets)
+                        ActiveBudgets.Add(budget);
+
+                    HasOverdueBudgets = budgets.Any(b => b.IsOverBudget);
+                });
+            });
+        }
+
+        private async Task LoadRecurringTransactionsAsync()
+        {
+            await Task.Run(() =>
+            {
+                var overdueCount = _databaseService.GetDueRecurringTransactions().Count;
+                OverdueRecurringCount = overdueCount;
+            });
         }
 
         private void UpdateChart()
         {
-            var entries = Transactions
+            var entries = RecentTransactions
                 .Where(t => t.Type == TransactionType.Expense)
                 .GroupBy(t => t.Category)
-                .Select((g, index) => new ChartEntry((float)g.Sum(t => t.Amount))
+                .Select(g => new ChartEntry((float)g.Sum(t => t.Amount))
                 {
                     Label = g.Key,
                     ValueLabel = g.Sum(t => t.Amount).ToString("C0", CultureInfo.CurrentCulture),
                     Color = GetColorForCategory(g.Key)
                 }).ToList();
 
-            ExpenseChart = new DonutChart
-            {
-                Entries = entries,
-                LabelMode = LabelMode.RightOnly,
-                LabelTextSize = 30,
-                //BackgroundColor = SKColor.Parse("#E6F2EE"),
-                AnimationProgress = 1
-            };
-
-            OnPropertyChanged(nameof(ExpenseChart));
+            ExpenseChart = entries.Any()
+                ? new DonutChart
+                {
+                    Entries = entries,
+                    LabelMode = LabelMode.RightOnly,
+                    LabelTextSize = 30,
+                    AnimationProgress = 1
+                }
+                : null;
         }
 
-        private SKColor GetColorForCategory(string category)
-        {
-            return category switch
+        private SKColor GetColorForCategory(string category) =>
+            category switch
             {
                 "Еда" => SKColor.Parse("#FF6F61"),
                 "Транспорт" => SKColor.Parse("#6B5B95"),
@@ -140,45 +160,29 @@ namespace PersonalFinanceTracker.ViewModels
                 "Другое" => SKColor.Parse("#00ACC1"),
                 _ => SKColor.Parse("#607D8B")
             };
-        }
 
-        private async void OnAddTransaction()
-        {
+        [RelayCommand]
+        private async Task AddTransactionAsync() =>
             await Shell.Current.GoToAsync("AddTransactionPage");
-            UpdateChart();
-        }
 
-        private async void OnOpenHistory()
-        {
+        [RelayCommand]
+        private async Task OpenHistoryAsync() =>
             await Shell.Current.GoToAsync("TransactionListPage");
-        }
 
-        private async void OnOpenSettings()
-        {
+        [RelayCommand]
+        private async Task OpenSettingsAsync() =>
             await Shell.Current.GoToAsync("SettingsPage");
-        }
 
-        private async void OnOpenGoals()
-        {
-            await Shell.Current.DisplayAlert("Цели", "Переход к целям пока не реализован", "OK");
-        }
+        [RelayCommand]
+        private async Task OpenGoalsAsync() =>
+            await Shell.Current.GoToAsync("GoalsPage");
 
-        private async void OnOpenBudgets()
-        {
-            await Shell.Current.DisplayAlert("Бюджеты", "Переход к бюджетам пока не реализован", "OK");
-        }
+        [RelayCommand]
+        private async Task OpenBudgetsAsync() =>
+            await Shell.Current.GoToAsync("BudgetsPage");
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string name = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string name = null)
-        {
-            if (Equals(storage, value)) return false;
-            storage = value;
-            OnPropertyChanged(name);
-            return true;
-        }
+        [RelayCommand]
+        private async Task RefreshAsync() =>
+            await LoadDataAsync();
     }
 }

@@ -10,7 +10,7 @@ namespace PersonalFinanceTracker.ViewModels
 {
     public class TransactionListViewModel : INotifyPropertyChanged
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IDatabaseService _databaseService;
 
         public ObservableCollection<Transaction> Transactions { get; set; }
         public ObservableCollection<string> Categories { get; set; } = new();
@@ -65,7 +65,7 @@ namespace PersonalFinanceTracker.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public TransactionListViewModel(DatabaseService db)
+        public TransactionListViewModel(IDatabaseService db)
         {
             _databaseService = db;
             DeleteCommand = new RelayCommand<Transaction>(DeleteTransaction);
@@ -78,7 +78,7 @@ namespace PersonalFinanceTracker.ViewModels
 
         private void LoadTransactions()
         {
-            var all = _databaseService.GetAll();
+            var all = _databaseService.GetAllTransactions();
             Transactions = new ObservableCollection<Transaction>(all);
             OnPropertyChanged(nameof(Transactions));
         }
@@ -98,13 +98,13 @@ namespace PersonalFinanceTracker.ViewModels
             bool confirm = await Application.Current.MainPage.DisplayAlert("Удаление", "Удалить транзакцию?", "Да", "Нет");
             if (!confirm) return;
 
-            _databaseService.Delete(transaction);
+            _databaseService.DeleteTransaction(transaction);
             Transactions.Remove(transaction);
         }
 
         private void LoadCategories()
         {
-            var allTransactions = _databaseService.GetAll();
+            var allTransactions = _databaseService.GetAllTransactions();
             var categories = allTransactions.Select(t => t.Category).Distinct().OrderBy(c => c).ToList();
 
             Categories.Clear();
@@ -115,7 +115,7 @@ namespace PersonalFinanceTracker.ViewModels
 
         private void ApplyFilter()
         {
-            var filtered = _databaseService.GetAll()
+            var filtered = _databaseService.GetAllTransactions()
                 .Where(t => t.Date >= StartDate && t.Date <= EndDate);
 
             if (SelectedCategory != "Все")

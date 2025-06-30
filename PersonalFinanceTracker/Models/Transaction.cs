@@ -25,7 +25,7 @@ namespace PersonalFinanceTracker.Models
             set => SetField(ref _type, value, nameof(AmountDisplay), nameof(AmountColor));
         }
 
-        string _category;
+        string _category = string.Empty;
         public string Category
         {
             get => _category;

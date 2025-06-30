@@ -7,7 +7,7 @@ public partial class GoalsPage : ContentPage
 {
     private readonly GoalViewModel viewModel;
 
-    public GoalsPage(DatabaseService databaseService)
+    public GoalsPage(IDatabaseService databaseService)
     {
         InitializeComponent();        
         viewModel = new GoalViewModel(databaseService);

@@ -2,6 +2,7 @@
 <Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:PersonalFinanceTracker.Services"
+             xmlns:converters="clr-namespace:PersonalFinanceTracker.Converters"
              x:Class="PersonalFinanceTracker.App">
     <Application.Resources>
         <ResourceDictionary>
@@ -9,8 +10,17 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <!--<local:TypeToColorConverter x:Key="TypeToColorConverter" />-->
-            <local:TransactionAmountConverter x:Key="TransactionAmountConverter"/>
+            
+            <!-- Converters -->
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter" />
+            <converters:IsEmptyConverter x:Key="IsEmptyConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+            <converters:PercentageConverter x:Key="PercentageConverter" />
+            <converters:CurrencyConverter x:Key="CurrencyConverter" />
+            <converters:TransactionTypeToColorConverter x:Key="TransactionTypeToColorConverter" />
+            <converters:TransactionTypeToStringConverter x:Key="TransactionTypeToStringConverter" />
+            <converters:BudgetStatusToColorConverter x:Key="BudgetStatusToColorConverter" />
             <local:GoalProgressConverter x:Key="GoalProgressConverter"/>
         </ResourceDictionary>
     </Application.Resources>

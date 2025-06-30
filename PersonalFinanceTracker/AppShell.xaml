@@ -5,8 +5,39 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:PersonalFinanceTracker.Views"
     Shell.FlyoutBehavior="Disabled"
-    Title="PersonalFinanceTracker">
-    <ShellContent Title="Финансы" ContentTemplate="{DataTemplate local:MainPage}" Route="MainPage"/>
-    <ShellContent Title="Цели" ContentTemplate="{DataTemplate local:GoalsPage}" Route="GoalsPage" />
+    Shell.NavBarIsVisible="True"
+    Shell.TabBarIsVisible="True"
+    Title="Personal Finance Tracker">
+
+    <!-- Tab Bar -->
+    <TabBar>
+        <ShellContent Title="Главная" 
+                      Icon="🏠" 
+                      ContentTemplate="{DataTemplate local:MainPage}" 
+                      Route="MainPage" />
+        
+        <ShellContent Title="Цели" 
+                      Icon="🎯" 
+                      ContentTemplate="{DataTemplate local:GoalsPage}" 
+                      Route="GoalsPage" />
+        
+        <ShellContent Title="Бюджеты" 
+                      Icon="💰" 
+                      ContentTemplate="{DataTemplate local:BudgetsPage}" 
+                      Route="BudgetsPage" />
+        
+        <ShellContent Title="Настройки" 
+                      Icon="⚙️" 
+                      ContentTemplate="{DataTemplate local:SettingsPage}" 
+                      Route="SettingsPage" />
+    </TabBar>
+
+    <!-- Modal Pages -->
+    <ShellContent Route="AddTransactionPage" ContentTemplate="{DataTemplate local:AddTransactionPage}" />
+    <ShellContent Route="EditTransactionPage" ContentTemplate="{DataTemplate local:EditTransactionPage}" />
     <ShellContent Route="AddGoalPage" ContentTemplate="{DataTemplate local:AddGoalPage}" />
+    <ShellContent Route="TransactionListPage" ContentTemplate="{DataTemplate local:TransactionListPage}" />
+    <ShellContent Route="ExportPage" ContentTemplate="{DataTemplate local:ExportPage}" />
+    <ShellContent Route="PinSettingsPage" ContentTemplate="{DataTemplate local:PinSettingsPage}" />
+    <ShellContent Route="PinUnlockPage" ContentTemplate="{DataTemplate local:PinUnlockPage}" />
 </Shell>

@@ -12,11 +12,19 @@ namespace PersonalFinanceTracker.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        string _title;
+        string _title = string.Empty;
         public string Title
         {
             get => _title;
             set => SetField(ref _title, value);
+        }
+
+        // Add Name property as alias for Title for compatibility with analytics
+        [Ignore]
+        public string Name
+        {
+            get => Title;
+            set => Title = value;
         }
 
         decimal _targetAmount;
@@ -46,6 +54,14 @@ namespace PersonalFinanceTracker.Models
         {
             get => _deadline;
             set => SetField(ref _deadline, value);
+        }
+
+        // Add TargetDate property as alias for Deadline for compatibility with analytics
+        [Ignore]
+        public DateTime TargetDate
+        {
+            get => Deadline;
+            set => Deadline = value;
         }
 
         [Ignore]

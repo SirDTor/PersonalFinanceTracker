@@ -59,24 +59,24 @@
                                        HorizontalOptions="End"
                                        VerticalOptions="Center"
                                        Grid.Column="1"/>
-                                    <Label FontSize="16"
+                                    <!--<Label FontSize="16"
                                        FontAttributes="Bold"
                                        HorizontalOptions="End"
                                        VerticalOptions="Center"
                                        Grid.Column="1">
-                                        <!-- Текст: передаем Amount, параметром — Type -->
+                                        --><!-- Текст: передаем Amount, параметром — Type --><!--
                                         <Label.Text>
                                             <Binding Path="Amount"
                                                  Converter="{StaticResource TransactionAmountConverter}"
                                                  ConverterParameter="{Binding Type}" />
                                         </Label.Text>
-                                        <!-- Цвет: тоже через конвертер -->
+                                        --><!-- Цвет: тоже через конвертер --><!--
                                         <Label.TextColor>
                                             <Binding Path="Amount"
                                                  Converter="{StaticResource TransactionAmountConverter}"
                                                  ConverterParameter="{Binding Type}" />
                                         </Label.TextColor>
-                                    </Label>
+                                    </Label>-->
                                 </Grid>
                             </Frame>
                         </SwipeView>

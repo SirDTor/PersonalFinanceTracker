@@ -11,13 +11,21 @@ namespace PersonalFinanceTracker.ViewModels
 {
     public class AddTransactionViewModel : INotifyPropertyChanged
     {
-        private readonly DatabaseService _databaseService;
+        private readonly IDatabaseService _databaseService;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ObservableCollection<string> Categories { get; set; } = new ObservableCollection<string>
         {
-            "Еда", "Транспорт", "Развлечения", "Жилье", "Поступление средств", "Перевод средств","Прочее"
+            "Еда", 
+            "Транспорт", 
+            "Развлечения", 
+            "Жилье", 
+            "Поступление средств", 
+            "Перевод средств", 
+            "Зарплата", 
+            "Инвестиции", 
+            "Другое"
         };
 
         public ObservableCollection<TransactionType> TransactionTypes { get; } = new()
@@ -65,7 +73,7 @@ namespace PersonalFinanceTracker.ViewModels
 
         public ICommand AddTransactionCommand { get; }
 
-        public AddTransactionViewModel(DatabaseService db)
+        public AddTransactionViewModel(IDatabaseService db)
         {
             _databaseService = db;
             AddTransactionCommand = new Command(OnAddTransaction);
@@ -83,7 +91,7 @@ namespace PersonalFinanceTracker.ViewModels
                     Date = Date,
                     Type = SelectedTransactionType
                 };
-                _databaseService.Add(transaction);
+                _databaseService.AddTransaction(transaction);
                 await Shell.Current.DisplayAlert("Готово", "Операция добавлена", "ОК");
                 await Shell.Current.GoToAsync(".."); // Возврат назад
             }

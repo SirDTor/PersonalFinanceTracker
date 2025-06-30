@@ -1,89 +1,79 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using PersonalFinanceTracker.Models;
 using PersonalFinanceTracker.Services;
+using PersonalFinanceTracker.ViewModels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
-public class GoalViewModel : INotifyPropertyChanged
+namespace PersonalFinanceTracker.ViewModels
 {
-    private readonly DatabaseService _db;
-    public ObservableCollection<Goal> Goals { get; set; } = new();
-
-    public ICommand EditCommand { get; }
-    public ICommand DeleteCommand { get; }
-    public ICommand TopUpCommand { get; }
-
-    public GoalViewModel(DatabaseService db)
+    public partial class GoalViewModel : BaseViewModel
     {
-        _db = db;
+        private readonly IDatabaseService _databaseService;
 
-        EditCommand = new AsyncRelayCommand<Goal>(EditGoalAsync);
-        DeleteCommand = new RelayCommand<Goal>(DeleteGoal);
-        TopUpCommand = new AsyncRelayCommand<Goal>(TopUpGoalAsync);
+        [ObservableProperty]
+        private ObservableCollection<Goal> _goals;
 
-        LoadGoals();
-    }
+        [ObservableProperty]
+        private Goal _selectedGoal;
 
-    private void LoadGoals()
-    {
-        Goals.Clear();
-        foreach (var g in _db.GetGoals())
-            Goals.Add(g);
-    }
+        [ObservableProperty]
+        private bool _isAddingGoal;
 
-    private async Task EditGoalAsync(Goal goal)
-    {
-        if (goal == null) return;
+        [ObservableProperty]
+        private string _goalName;
 
-        string newTitle = await Shell.Current.DisplayPromptAsync("Изменение", "Новое название:", initialValue: goal.Title);
-        string newTarget = await Shell.Current.DisplayPromptAsync("Цель", "Новая сумма цели:", initialValue: goal.TargetAmount.ToString());
-        string newDeadline = await Shell.Current.DisplayPromptAsync("Срок", "Новая дата (дд.мм.гггг):", initialValue: goal.Deadline.ToShortDateString());
+        [ObservableProperty]
+        private decimal _goalAmount;
 
-        if (!string.IsNullOrWhiteSpace(newTitle) &&
-            decimal.TryParse(newTarget, out var newAmount) &&
-            DateTime.TryParse(newDeadline, out var newDate))
+        public GoalViewModel(IDatabaseService databaseService) : base()
         {
-            goal.Title = newTitle;
-            goal.TargetAmount = newAmount;
-            goal.Deadline = newDate;
+            _databaseService = databaseService;
+            LoadGoalsAsync();
+        }
 
-            _db.UpdateGoal(goal);
-            OnPropertyChanged(nameof(Goals));
+        private async Task LoadGoalsAsync()
+        {
+            var goals = await _databaseService.GetGoalsAsync();
+            Goals = new ObservableCollection<Goal>(goals);
+        }
+
+        [RelayCommand]
+        private async Task AddGoalAsync()
+        {
+            if (IsAddingGoal)
+            {
+                var goal = new Goal { Name = GoalName, TargetAmount = GoalAmount };
+                _databaseService.AddGoal(goal);
+                Goals.Add(goal);
+                IsAddingGoal = false;
+            }
+            else
+            {
+                IsAddingGoal = true;
+            }
+        }
+
+        [RelayCommand]
+        private async Task EditGoalAsync()
+        {
+            if (SelectedGoal != null)
+            {
+                _databaseService.UpdateGoal(SelectedGoal);
+            }
+        }
+
+        [RelayCommand]
+        private async Task DeleteGoalAsync()
+        {
+            if (SelectedGoal != null)
+            {
+                _databaseService.DeleteGoal(SelectedGoal);
+                Goals.Remove(SelectedGoal);
+            }
         }
     }
-
-    private void DeleteGoal(Goal goal)
-    {
-        if (goal == null) return;
-
-        _db.DeleteGoal(goal);
-        Goals.Remove(goal);
-        OnPropertyChanged(nameof(Goals));
-    }
-
-    private async Task TopUpGoalAsync(Goal goal)
-    {
-        if (goal == null) return;
-
-        string amountStr = await Shell.Current.DisplayPromptAsync("Пополнение", "Введите сумму:");
-        if (decimal.TryParse(amountStr, out decimal addAmount))
-        {
-            goal.CurrentAmount += addAmount;
-            _db.UpdateGoal(goal);
-            OnPropertyChanged(nameof(Goals));
-        }
-    }
-
-    public void AddGoal(Goal goal)
-    {
-        _db.AddGoal(goal);
-        Goals.Add(goal);
-        OnPropertyChanged(nameof(Goals));
-    }
-
-    public event PropertyChangedEventHandler? PropertyChanged;
-    protected void OnPropertyChanged([CallerMemberName] string? name = null) =>
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }

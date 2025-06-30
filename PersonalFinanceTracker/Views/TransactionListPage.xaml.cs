@@ -7,7 +7,7 @@ namespace PersonalFinanceTracker.Views
     {
         private readonly TransactionListViewModel _viewModel;
 
-        public TransactionListPage(DatabaseService db)
+        public TransactionListPage(IDatabaseService db)
         {
             InitializeComponent();
             _viewModel = new TransactionListViewModel(db);

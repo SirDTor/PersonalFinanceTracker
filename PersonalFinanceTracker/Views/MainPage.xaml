@@ -1,119 +1,249 @@
-﻿<ContentPage 
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:views="clr-namespace:PersonalFinanceTracker.Views"
-    xmlns:local="clr-namespace:PersonalFinanceTracker.ViewModels"
-    xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
-    x:Class="PersonalFinanceTracker.Views.MainPage"
-    Title="Финансы"
-    BackgroundColor="#E6F2EE"
-    NavigationPage.HasNavigationBar="False">
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="PersonalFinanceTracker.Views.MainPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:PersonalFinanceTracker.ViewModels"
+             xmlns:models="clr-namespace:PersonalFinanceTracker.Models"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             Title="{Binding Title}"
+             BackgroundColor="{StaticResource Background}"
+             NavigationPage.HasNavigationBar="False">
 
-    <ContentPage.BindingContext>
-        <local:MainViewModel />
-    </ContentPage.BindingContext>
 
-    <Grid RowDefinitions="Auto, *, Auto">
-        <!-- Верхняя панель с настройками-->
-        <ImageButton Grid.Row="0"
-                     Margin="6"
-                     Source="settings_button.svg"
-                     Clicked="OnSettingsClicked"
-                     WidthRequest="32"
-                     HeightRequest="32"
-                     BackgroundColor="Transparent"
-                     HorizontalOptions="End"/>
-
-        <ScrollView Grid.Row="1" Margin="6,0,6,0">
-            <VerticalStackLayout Spacing="20">
-                <!-- Доход и Расход -->
-                <Frame CornerRadius="15" Padding="20">
-                    <VerticalStackLayout Spacing="10">
-                        <Grid ColumnDefinitions="*,*" Padding="0">
-                            <Label Grid.Column="0"
-                                   Text="{Binding MonthlyIncome, StringFormat='Доход за месяц: {0:C0}'}"
-                                   FontSize="16"/>
-                            <Label Grid.Column="1"
-                                   Text="{Binding MonthlyExpense, StringFormat='Расход за месяц: {0:C0}'}"
-                                   FontSize="16"
-                                   HorizontalOptions="End" />
-                        </Grid>
-                        <!-- Место под график -->
-                        <microcharts:ChartView Chart="{Binding ExpenseChart}"
-                                               HeightRequest="250"
-                                               VerticalOptions="Center" />
-                    </VerticalStackLayout>
-                </Frame>
-                <!-- Кнопки -->
-                <Grid ColumnDefinitions="*,*" Padding="0">
-                    <Button Grid.Column="0"
-                            Text="Аналитика"
-                            Margin="3"
-                            CornerRadius="10"/>
-                    <Button Grid.Column="1"
-                            Text="История"
-                            Margin="3"
-                            Clicked="OnHistoryClicked"
-                            CornerRadius="10"/>
+    <RefreshView IsRefreshing="{Binding IsRefreshing}" Command="{Binding LoadDataCommand}">
+        <ScrollView>
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" Padding="16" RowSpacing="16">
+                
+                <!-- Header with Settings -->
+                <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                    <StackLayout Grid.Column="0">
+                        <Label Text="Добро пожаловать!" 
+                               FontSize="28" 
+                               FontAttributes="Bold" 
+                               TextColor="{StaticResource Primary}" />
+                        <Label Text="Управляйте своими финансами" 
+                               FontSize="16" 
+                               TextColor="{StaticResource Gray600}" />
+                    </StackLayout>
+                    
+                    <Button Grid.Column="1" 
+                            Text="⚙️" 
+                            Command="{Binding OpenSettingsCommand}"
+                            FontSize="20"
+                            WidthRequest="44"
+                            HeightRequest="44"
+                            CornerRadius="22"
+                            BackgroundColor="{StaticResource SurfaceVariant}"
+                            TextColor="{StaticResource Gray700}" />
                 </Grid>
 
-                <!-- Цели -->
-                <VerticalStackLayout>
-                    <!-- Заголовок -->
-                    <Grid ColumnDefinitions="*,Auto">
-                        <Label Grid.Column="0" Text="Цели" FontSize="20" VerticalOptions="Center"/>
-                        <Button Grid.Column="1" Text="См. все" FontSize="14" Clicked="OnViewGoalsClicked" />
+                <!-- Balance Card -->
+                <Frame Grid.Row="1" 
+                       BackgroundColor="{StaticResource Primary}" 
+                       CornerRadius="16" 
+                       Padding="20" 
+                       HasShadow="True">
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="*,Auto">
+                        <Label Grid.Row="0" Grid.ColumnSpan="2"
+                               Text="Текущий баланс"
+                               FontSize="16"
+                               TextColor="White"
+                               Opacity="0.8" />
+                        
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="{Binding Balance, StringFormat='{0:C0}'}"
+                               FontSize="32"
+                               FontAttributes="Bold"
+                               TextColor="White" />
+                        
+                        <Button Grid.Row="1" Grid.Column="1"
+                                Text="+"
+                                Command="{Binding AddTransactionCommand}"
+                                FontSize="24"
+                                FontAttributes="Bold"
+                                WidthRequest="56"
+                                HeightRequest="56"
+                                CornerRadius="28"
+                                BackgroundColor="White"
+                                TextColor="{StaticResource Primary}"
+                                VerticalOptions="Center" />
+                        
+                        <Grid Grid.Row="2" Grid.ColumnSpan="2" 
+                              ColumnDefinitions="*,*" 
+                              Margin="0,16,0,0">
+                            <StackLayout Grid.Column="0">
+                                <Label Text="{Binding MonthlyIncome, StringFormat='{0:C0}'}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource SecondaryLight}" />
+                                <Label Text="Доходы за месяц"
+                                       FontSize="12"
+                                       TextColor="White"
+                                       Opacity="0.8" />
+                            </StackLayout>
+                            
+                            <StackLayout Grid.Column="1">
+                                <Label Text="{Binding MonthlyExpense, StringFormat='{0:C0}'}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{StaticResource TertiaryLight}" />
+                                <Label Text="Расходы за месяц"
+                                       FontSize="12"
+                                       TextColor="White"
+                                       Opacity="0.8" />
+                            </StackLayout>
+                        </Grid>
                     </Grid>
-                    <!-- Список целей -->
-                    <ScrollView Orientation="Horizontal">
-                        <HorizontalStackLayout BindableLayout.ItemsSource="{Binding Goals}" Spacing="10" Padding="0,10">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate>
-                                    <Frame WidthRequest="160" HeightRequest="120"
-                                           CornerRadius="10"
-                                           BackgroundColor="White"
-                                           Padding="10"
-                                           HasShadow="True">
-                                        <VerticalStackLayout VerticalOptions="Center" Spacing="5">
-                                            <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" />
-                                            <ProgressBar Progress="{Binding Progress}" HeightRequest="8" />
-                                            <Label Text="{Binding CurrentAmount, StringFormat='Накоплено: {0:C}'}"
-                                                   FontSize="12" TextColor="Gray"/>
-                                        </VerticalStackLayout>
-                                    </Frame>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </HorizontalStackLayout>
-                    </ScrollView>
-                </VerticalStackLayout>
-            </VerticalStackLayout>
-        </ScrollView>
+                </Frame>
 
-        <!-- Нижняя панель -->
-        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Padding="0,10" BackgroundColor="#848d8a">
-            <VerticalStackLayout Grid.Column="0" Margin="16,0,0,0">
-                <Label Text="Остаток"
-                       TextColor="White"
-                       FontSize="16"
-                       FontAttributes="Bold"/>
-                <Label Text="{Binding Balance, StringFormat='{0:C0}'}"
-                       TextColor="White"
-                       FontSize="30"                       
-                       FontAttributes="Bold"
-                       VerticalOptions="Center" />
-            </VerticalStackLayout>
-            <Button Grid.Column="1"
-                    Text="+"
-                    Clicked="OnAddTransactionClicked"
-                    FontSize="26"
-                    FontAttributes="Bold"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    CornerRadius="25"
-                    Padding="0"
-                    Margin="0,0,16,0"
-                    BackgroundColor="#2196F3"
-                    HorizontalOptions="End"/>
-        </Grid>
-    </Grid>
+                <!-- Quick Actions -->
+                <Grid Grid.Row="2" ColumnDefinitions="*,*,*,*" ColumnSpacing="12">
+                    <Frame Grid.Column="0" 
+                           BackgroundColor="{StaticResource Surface}" 
+                           Padding="16" 
+                           CornerRadius="12"
+                           HasShadow="True">
+                        <StackLayout>
+                            <Label Text="📊" FontSize="24" HorizontalOptions="Center" />
+                            <Label Text="История" 
+                                   FontSize="12" 
+                                   HorizontalOptions="Center" 
+                                   HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenHistoryCommand}" />
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                    
+                    <Frame Grid.Column="1" 
+                           BackgroundColor="{StaticResource Surface}" 
+                           Padding="16" 
+                           CornerRadius="12"
+                           HasShadow="True">
+                        <StackLayout>
+                            <Label Text="🎯" FontSize="24" HorizontalOptions="Center" />
+                            <Label Text="Цели" 
+                                   FontSize="12" 
+                                   HorizontalOptions="Center" 
+                                   HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenGoalsCommand}" />
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                    
+                    <Frame Grid.Column="2" 
+                           BackgroundColor="{StaticResource Surface}" 
+                           Padding="16" 
+                           CornerRadius="12"
+                           HasShadow="True">
+                        <StackLayout>
+                            <Label Text="💰" FontSize="24" HorizontalOptions="Center" />
+                            <Label Text="Бюджеты" 
+                                   FontSize="12" 
+                                   HorizontalOptions="Center" 
+                                   HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenBudgetsCommand}" />
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                    
+                    <Frame Grid.Column="3" 
+                           BackgroundColor="{StaticResource Surface}" 
+                           Padding="16" 
+                           CornerRadius="12"
+                           HasShadow="True">
+                        <StackLayout>
+                            <Label Text="📱" FontSize="24" HorizontalOptions="Center" />
+                            <Label Text="Еще" 
+                                   FontSize="12" 
+                                   HorizontalOptions="Center" 
+                                   HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                    </Frame>
+                </Grid>
+
+                <!-- Recent Transactions -->
+                <Frame Grid.Row="3" 
+                       BackgroundColor="{StaticResource Surface}" 
+                       CornerRadius="16" 
+                       Padding="16" 
+                       HasShadow="True">
+                    <StackLayout>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" 
+                                   Text="Последние операции" 
+                                   FontSize="18" 
+                                   FontAttributes="Bold" />
+                            <Button Grid.Column="1" 
+                                    Text="Все →" 
+                                    Command="{Binding OpenHistoryCommand}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="{StaticResource Primary}"
+                                    FontSize="14" />
+                        </Grid>
+                        
+                        <CollectionView ItemsSource="{Binding RecentTransactions}" 
+                                        HeightRequest="200">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Transaction">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" 
+                                          Padding="0,8" 
+                                          ColumnSpacing="12">
+                                        <Frame Grid.Column="0" 
+                                               WidthRequest="40" 
+                                               HeightRequest="40" 
+                                               CornerRadius="20" 
+                                               BackgroundColor="{StaticResource PrimaryLight}" 
+                                               Padding="8">
+                                            <Label Text="💳" 
+                                                   FontSize="16" 
+                                                   HorizontalOptions="Center" 
+                                                   VerticalOptions="Center" />
+                                        </Frame>
+                                        
+                                        <StackLayout Grid.Column="1">
+                                            <Label Text="{Binding Category}" 
+                                                   FontSize="16" 
+                                                   FontAttributes="Bold" />
+                                            <Label Text="{Binding Date, StringFormat='{0:dd MMM yyyy}'}" 
+                                                   FontSize="12" 
+                                                   TextColor="{StaticResource Gray600}" />
+                                        </StackLayout>
+                                        
+                                        <Label Grid.Column="2" 
+                                               Text="{Binding AmountDisplay}" 
+                                               FontSize="16" 
+                                               FontAttributes="Bold" 
+                                               TextColor="{Binding AmountColor}" 
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </StackLayout>
+                </Frame>
+
+                <!-- Chart Section -->
+                <Frame Grid.Row="4" 
+                       BackgroundColor="{StaticResource Surface}" 
+                       CornerRadius="16" 
+                       Padding="16" 
+                       HasShadow="True"
+                       IsVisible="{Binding ExpenseChart, Converter={StaticResource IsNotNullConverter}}">
+                    <StackLayout>
+                        <Label Text="Расходы по категориям" 
+                               FontSize="18" 
+                               FontAttributes="Bold" 
+                               Margin="0,0,0,16" />
+                        
+                        <microcharts:ChartView Chart="{Binding ExpenseChart}" 
+                                               HeightRequest="250" />
+                    </StackLayout>
+                </Frame>
+
+            </Grid>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>
